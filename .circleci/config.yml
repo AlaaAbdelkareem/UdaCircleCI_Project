@@ -49,7 +49,7 @@ jobs:
           command: |
             cd frontend
             npm install
-            # npm iinstall oauth-sign
+            npm install oauth-sign
             # npm run build
             npm run test
                 
