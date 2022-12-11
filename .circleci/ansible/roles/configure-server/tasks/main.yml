@@ -14,3 +14,4 @@
   npm:
     name: PM2
     global: yes 
+    sudo_user: root
