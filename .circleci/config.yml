@@ -208,26 +208,21 @@ jobs:
       - destroy_environment
   configure-infrastructure:
     docker:
-      - image: mareimorsy/aws-node
+      - image: cimg/base:stable
     steps:
       - checkout
+      - install_ansible
       - add_ssh_keys:
           fingerprints: ["e8:cc:f0:f3:58:e9:96:b4:aa:70:b0:c8:bf:1a:e8:98"]
-      # - run:
-      #     name: "Install Dependencies"
-      #     command: |
-      #       apk add ansible gzip openssh-client
       - attach_workspace:
           at: ~/
       - run:
           name: Configure server
           command: |
             cd .circleci/ansible
-            aws ec2 describe-instances --region us-east-1 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> inventory.txt
-            cat inventory.txt
-            ansible-playbook -i inventory.txt configure-server.yml
-      # Here's where you will add some code to rollback on failure  
-      - destroy_environment
+            cat inventory.txt 
+            ansible-playbook -i .inventory.txt configure-server.yml
+      - destroy-environment
        
   run-migrations:
     docker: 
