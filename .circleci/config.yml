@@ -273,7 +273,28 @@ jobs:
             cd frontend
             npm run build
             aws s3 cp dist s3://udapeople-82092 --recursive
-            
+  deploy-backend:
+    docker:
+      - image: mareimorsy/aws-node
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["e8:cc:f0:f3:58:e9:96:b4:aa:70:b0:c8:bf:1a:e8:98"]
+      - run:
+          name: Deploy backend
+          command: |
+            export TYPEORM_HOST=${TYPEORM_HOST}
+            echo $TYPEORM_HOST >> .circleci/ansible/inventory.txt
+            cd backend
+            npm i
+            npm run build
+            tar -czf artifact.tar.gz dist/* package*
+            cp artifact.tar.gz ~/project/.circleci/ansible/roles/deploy/artifact.tar.gz
+            ls ../.circleci/ansible/roles/deploy/
+            cd ../.circleci/ansible
+            ansible-playbook -i inventory.txt deploy-backend.yml
+      # Here's where you will add some code to rollback on failure 
+      
 workflows:
   default:
     jobs:
@@ -298,3 +319,5 @@ workflows:
       #    requires: [configure-infrastructure]
       #- deploy-frontend
       #     requires: [run-migrations]
+      - deploy-backend:
+      #    requires: [run-migrations]
