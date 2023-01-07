@@ -326,7 +326,8 @@ jobs:
             else
               exit 1
             fi
-      
+      - destroy-environment
+      - revert-migrations      
   cloudfront-update:
     docker:
       - image: mareimorsy/aws-node
@@ -392,9 +393,9 @@ workflows:
       #    requires: [configure-infrastructure]
       #- deploy-frontend:
       #     requires: [run-migrations]
-      - deploy-backend
+      #- deploy-backend:
       #    requires: [run-migrations]
-      #- smoke-test
+      - smoke-test
       #    requires: [deploy-backend, deploy-frontend]
       #- cloudfront-update:
       #    requires: [smoke-test]
