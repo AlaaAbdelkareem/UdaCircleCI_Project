@@ -326,8 +326,9 @@ jobs:
             else
               exit 1
             fi
-      - destroy-environment
-      - revert-migrations      
+      - destroy_environment
+      - revert-migrations
+      
   cloudfront-update:
     docker:
       - image: mareimorsy/aws-node
