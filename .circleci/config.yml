@@ -229,16 +229,9 @@ jobs:
 
     steps:
       - checkout
+      - install_awscli
       - restore_cache:
           keys: [backend-build]
-
-      - run: 
-          name: Install AWS dependencies
-          command: | 
-            sudo apt upgrade && sudo apt install
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            sudo ./aws/install
       - run:
           name: Run migrations
           command: |
@@ -246,8 +239,9 @@ jobs:
             npm cache clean --force
             rm -rf node_modules
             npm i
-            npm run migrations > migrations_dump.txt
-            cat migrations_dump.txt
+            npm install
+            npm run premigrations
+            npm run migrations
            
       - run:
           name: Sending migration status to a key value store.
